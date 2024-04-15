@@ -1,6 +1,9 @@
-FROM maven:3.8.2-jdk-11 AS build
+# Stage 1: Build the application
+FROM maven:3.8.2-openjdk-17 AS build
 COPY . .
 RUN mvn clean package -Pprod -DskipTests
-FROM openjdk:11-jdk-slim
+
+# Stage 2: Create the final image
+FROM adoptopenjdk/openjdk17:alpine-jre
 COPY --from=build /target/DogsManagementSystem-0.0.1-SNAPSHOT.jar DogsManagementSystem.jar
 CMD ["java", "-jar", "DogsManagementSystem.jar"]
